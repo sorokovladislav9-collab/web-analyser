@@ -1,0 +1,33 @@
+# Основной фреймворк
+Flask==2.3.3
+# База данных MySQL
+PyMySQL==1.1.0
+Flask-SQLAlchemy==3.0.5
+# Миграции БД
+Flask-Migrate==4.0.5
+# Аутентификация и безопасность
+Flask-Login==0.6.3
+Werkzeug==2.3.7
+# Работа с HTTP запросами
+requests==2.31.0
+# Парсинг HTML
+beautifulsoup4==4.12.2
+lxml==4.9.3
+html5lib==1.1
+# Генерация отчетов
+reportlab==4.0.4
+Jinja2==3.1.2
+# Валидация данных
+marshmallow==3.20.1
+# Тестирование
+pytest==7.4.2
+pytest-flask==1.2.0
+pytest-cov==4.1.0
+# Работа с CSV/JSON
+pandas==2.0.3
+# Конфигурация
+python-dotenv==1.0.0
+# Логирование
+colorlog==6.7.0
+# Анализ производительности (заглушки)
+psutil==5.9.5

@@ -1,0 +1,345 @@
+{% extends "base.html" %}
+
+{% block title %}Анализ {{ website.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Анализ {{ website.name }}
+                    </h3>
+                    <div>
+                        <a href="{{ url_for('main.websites') }}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i>
+                            К списку сайтов
+                        </a>
+                        <a href="{{ url_for('main.start_analysis', website_id=website.id) }}" 
+                           class="btn btn-primary btn-sm">
+                            <i class="fas fa-sync me-1"></i>
+                            Обновить анализ
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Общая информация -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-globe me-2"></i>Сайт</h6>
+                            <p><a href="{{ website.url }}" target="_blank">{{ website.url }}</a></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-calendar me-2"></i>Дата анализа</h6>
+                            <p>{{ analysis.analysis_date.strftime('%d.%m.%Y %H:%M') }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Сравнение с предыдущим анализом -->
+                    {% if comparison and comparison.has_previous %}
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-exchange-alt me-2"></i>
+                                        Сравнение с предыдущим анализом
+                                        <small class="text-muted">({{ comparison.previous_analysis_date.strftime('%d.%m.%Y %H:%M') }})</small>
+                                    </h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>Общий балл:</span>
+                                                <span class="badge {% if comparison.overall_improved %}bg-success{% elif comparison.overall_change == 0 %}bg-secondary{% else %}bg-danger{% endif %}">
+                                                    {% if comparison.overall_improved %}<i class="fas fa-arrow-up me-1"></i>{% elif comparison.overall_change < 0 %}<i class="fas fa-arrow-down me-1"></i>{% else %}<i class="fas fa-minus me-1"></i>{% endif %}
+                                                    {{ "%.1f"|format(comparison.overall_change) }}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>SEO:</span>
+                                                <span class="badge {% if comparison.seo_improved %}bg-success{% elif comparison.seo_change == 0 %}bg-secondary{% else %}bg-danger{% endif %}">
+                                                    {% if comparison.seo_improved %}<i class="fas fa-arrow-up me-1"></i>{% elif comparison.seo_change < 0 %}<i class="fas fa-arrow-down me-1"></i>{% else %}<i class="fas fa-minus me-1"></i>{% endif %}
+                                                    {{ "%.1f"|format(comparison.seo_change) }}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mt-2">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>Производительность:</span>
+                                                <span class="badge {% if comparison.performance_improved %}bg-success{% elif comparison.performance_change == 0 %}bg-secondary{% else %}bg-danger{% endif %}">
+                                                    {% if comparison.performance_improved %}<i class="fas fa-arrow-up me-1"></i>{% elif comparison.performance_change < 0 %}<i class="fas fa-arrow-down me-1"></i>{% else %}<i class="fas fa-minus me-1"></i>{% endif %}
+                                                    {{ "%.1f"|format(comparison.performance_change) }}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mt-2">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>Безопасность:</span>
+                                                <span class="badge {% if comparison.security_improved %}bg-success{% elif comparison.security_change == 0 %}bg-secondary{% else %}bg-danger{% endif %}">
+                                                    {% if comparison.security_improved %}<i class="fas fa-arrow-up me-1"></i>{% elif comparison.security_change < 0 %}<i class="fas fa-arrow-down me-1"></i>{% else %}<i class="fas fa-minus me-1"></i>{% endif %}
+                                                    {{ "%.1f"|format(comparison.security_change) }}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mt-2">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>Доступность:</span>
+                                                <span class="badge {% if comparison.accessibility_improved %}bg-success{% elif comparison.accessibility_change == 0 %}bg-secondary{% else %}bg-danger{% endif %}">
+                                                    {% if comparison.accessibility_improved %}<i class="fas fa-arrow-up me-1"></i>{% elif comparison.accessibility_change < 0 %}<i class="fas fa-arrow-down me-1"></i>{% else %}<i class="fas fa-minus me-1"></i>{% endif %}
+                                                    {{ "%.1f"|format(comparison.accessibility_change) }}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mt-2">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>UX:</span>
+                                                <span class="badge {% if comparison.ux_improved %}bg-success{% elif comparison.ux_change == 0 %}bg-secondary{% else %}bg-danger{% endif %}">
+                                                    {% if comparison.ux_improved %}<i class="fas fa-arrow-up me-1"></i>{% elif comparison.ux_change < 0 %}<i class="fas fa-arrow-down me-1"></i>{% else %}<i class="fas fa-minus me-1"></i>{% endif %}
+                                                    {{ "%.1f"|format(comparison.ux_change) }}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Общий балл -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5><i class="fas fa-trophy me-2"></i>Общий балл</h5>
+                            <div class="d-flex align-items-center">
+                                <h2 class="me-3">{{ "%.1f"|format(overall_score) }}</h2>
+                                <div class="progress flex-grow-1" style="height: 25px;">
+                                    <div class="progress-bar {% if overall_score >= 80 %}bg-success{% elif overall_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                         style="width: {{ overall_score }}%">
+                                        {{ "%.1f"|format(overall_score) }}%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Детальные метрики -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-search me-2"></i>
+                                        SEO анализ
+                                    </h6>
+                                    {% if comparison and comparison.has_previous %}
+                                        <span class="badge {% if comparison.seo_improved %}bg-success{% elif comparison.seo_change == 0 %}bg-secondary{% else %}bg-danger{% endif %} badge-sm">
+                                            {% if comparison.seo_improved %}<i class="fas fa-arrow-up"></i>{% elif comparison.seo_change < 0 %}<i class="fas fa-arrow-down"></i>{% else %}<i class="fas fa-minus"></i>{% endif %}
+                                            {{ "%.1f"|format(comparison.seo_change) }}%
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>SEO балл</span>
+                                        <span class="badge {% if seo_score >= 80 %}bg-success{% elif seo_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ "%.1f"|format(seo_score) }}
+                                        </span>
+                                    </div>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar {% if seo_score >= 80 %}bg-success{% elif seo_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                             style="width: {{ seo_score }}%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-tachometer-alt me-2"></i>
+                                        Производительность
+                                    </h6>
+                                    {% if comparison and comparison.has_previous %}
+                                        <span class="badge {% if comparison.performance_improved %}bg-success{% elif comparison.performance_change == 0 %}bg-secondary{% else %}bg-danger{% endif %} badge-sm">
+                                            {% if comparison.performance_improved %}<i class="fas fa-arrow-up"></i>{% elif comparison.performance_change < 0 %}<i class="fas fa-arrow-down"></i>{% else %}<i class="fas fa-minus"></i>{% endif %}
+                                            {{ "%.1f"|format(comparison.performance_change) }}%
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>Балл производительности</span>
+                                        <span class="badge {% if performance_score >= 80 %}bg-success{% elif performance_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ "%.1f"|format(performance_score) }}
+                                        </span>
+                                    </div>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar {% if performance_score >= 80 %}bg-success{% elif performance_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                             style="width: {{ performance_score }}%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-shield-alt me-2"></i>
+                                        Безопасность
+                                    </h6>
+                                    {% if comparison and comparison.has_previous %}
+                                        <span class="badge {% if comparison.security_improved %}bg-success{% elif comparison.security_change == 0 %}bg-secondary{% else %}bg-danger{% endif %} badge-sm">
+                                            {% if comparison.security_improved %}<i class="fas fa-arrow-up"></i>{% elif comparison.security_change < 0 %}<i class="fas fa-arrow-down"></i>{% else %}<i class="fas fa-minus"></i>{% endif %}
+                                            {{ "%.1f"|format(comparison.security_change) }}%
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>Балл безопасности</span>
+                                        <span class="badge {% if security_score >= 80 %}bg-success{% elif security_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ "%.1f"|format(security_score) }}
+                                        </span>
+                                    </div>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar {% if security_score >= 80 %}bg-success{% elif security_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                             style="width: {{ security_score }}%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-universal-access me-2"></i>
+                                        Доступность
+                                    </h6>
+                                    {% if comparison and comparison.has_previous %}
+                                        <span class="badge {% if comparison.accessibility_improved %}bg-success{% elif comparison.accessibility_change == 0 %}bg-secondary{% else %}bg-danger{% endif %} badge-sm">
+                                            {% if comparison.accessibility_improved %}<i class="fas fa-arrow-up"></i>{% elif comparison.accessibility_change < 0 %}<i class="fas fa-arrow-down"></i>{% else %}<i class="fas fa-minus"></i>{% endif %}
+                                            {{ "%.1f"|format(comparison.accessibility_change) }}%
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>Балл доступности</span>
+                                        <span class="badge {% if accessibility_score >= 80 %}bg-success{% elif accessibility_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ "%.1f"|format(accessibility_score) }}
+                                        </span>
+                                    </div>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar {% if accessibility_score >= 80 %}bg-success{% elif accessibility_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                             style="width: {{ accessibility_score }}%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-user-friends me-2"></i>
+                                        UX
+                                    </h6>
+                                    {% if comparison and comparison.has_previous %}
+                                        <span class="badge {% if comparison.ux_improved %}bg-success{% elif comparison.ux_change == 0 %}bg-secondary{% else %}bg-danger{% endif %} badge-sm">
+                                            {% if comparison.ux_improved %}<i class="fas fa-arrow-up"></i>{% elif comparison.ux_change < 0 %}<i class="fas fa-arrow-down"></i>{% else %}<i class="fas fa-minus"></i>{% endif %}
+                                            {{ "%.1f"|format(comparison.ux_change) }}%
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>UX балл</span>
+                                        <span class="badge {% if ux_score >= 80 %}bg-success{% elif ux_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ "%.1f"|format(ux_score) }}
+                                        </span>
+                                    </div>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar {% if ux_score >= 80 %}bg-success{% elif ux_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                             style="width: {{ ux_score }}%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Рекомендации -->
+                    {% if analysis.recommendations %}
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5><i class="fas fa-lightbulb me-2"></i>Рекомендации</h5>
+                            <div class="list-group">
+                                {% for recommendation in analysis.recommendations %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>{{ recommendation }}</span>
+                                        <span class="badge bg-info">Совет</span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Действия -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a href="{{ url_for('main.start_analysis', website_id=website.id) }}" 
+                                   class="btn btn-primary">
+                                    <i class="fas fa-sync me-2"></i>
+                                    Обновить анализ
+                                </a>
+                                <a href="{{ url_for('main.edit_website', id=website.id) }}" 
+                                   class="btn btn-outline-primary">
+                                    <i class="fas fa-edit me-2"></i>
+                                    Редактировать сайт
+                                </a>
+                                <a href="{{ url_for('analysis.compare_websites') }}?include={{ website.id }}" 
+                                   class="btn btn-success">
+                                    <i class="fas fa-balance-scale me-2"></i>
+                                    Сравнить с другими
+                                </a>
+                                <div class="dropdown">
+                                    <button class="btn btn-info dropdown-toggle" type="button" id="reportDropdown" data-bs-toggle="dropdown">
+                                        <i class="fas fa-file-alt me-2"></i>
+                                        Генерировать отчет
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{{ url_for('reports.generate_report', analysis_id=analysis.id, format='txt') }}">
+                                            <i class="fas fa-file-alt me-2"></i>Текстовый отчет
+                                        </a></li>
+                                        <li><a class="dropdown-item" href="{{ url_for('reports.generate_report', analysis_id=analysis.id, format='html') }}">
+                                            <i class="fas fa-file-code me-2"></i>HTML
+                                        </a></li>
+                                        <li><a class="dropdown-item" href="{{ url_for('reports.generate_report', analysis_id=analysis.id, format='json') }}">
+                                            <i class="fas fa-file-code me-2"></i>JSON
+                                        </a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

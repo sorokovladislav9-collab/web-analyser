@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Добавление веб-ресурса - Система анализа веб-ресурсов{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-plus me-2"></i>Добавление веб-ресурса
+                </h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="url" class="form-label">URL веб-ресурса *</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-link"></i>
+                            </span>
+                            <input type="url" class="form-control" id="url" name="url" 
+                                   placeholder="https://example.com" required>
+                        </div>
+                        <small class="form-text text-muted">Введите полный URL адрес веб-сайта</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Название *</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-heading"></i>
+                            </span>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   placeholder="Название сайта" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Категория</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-tag"></i>
+                            </span>
+                            <select class="form-select" id="category" name="category">
+                                <option value="">Выберите категорию</option>
+                                <option value="ecommerce">E-commerce</option>
+                                <option value="corporate">Корпоративный сайт</option>
+                                <option value="blog">Блог</option>
+                                <option value="portfolio">Портфолио</option>
+                                <option value="news">Новостной сайт</option>
+                                <option value="education">Образование</option>
+                                <option value="entertainment">Развлечения</option>
+                                <option value="social">Социальная сеть</option>
+                                <option value="other">Другое</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="description" class="form-label">Описание</label>
+                        <textarea class="form-control" id="description" name="description" 
+                                  rows="3" placeholder="Краткое описание веб-ресурса"></textarea>
+                        <small class="form-text text-muted">Необязательное поле</small>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('main.websites') }}" class="btn btn-outline-secondary me-md-2">
+                            <i class="fas fa-times me-2"></i>Отмена
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Добавить ресурс
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Подсказки -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Советы по добавлению
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li>Убедитесь, что веб-ресурс доступен по указанному URL</li>
+                    <li>Используйте уникальное и понятное название для легкой идентификации</li>
+                    <li>Выберите подходящую категорию для лучшей организации</li>
+                    <li>Добавьте описание для дополнительной информации о ресурсе</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Автоматическое заполнение названия на основе URL
+    const urlField = document.getElementById('url');
+    const nameField = document.getElementById('name');
+    
+    if (urlField && nameField) {
+        urlField.addEventListener('input', function() {
+            const url = this.value.trim();
+            
+            // Автоматически заполняем название на основе URL, если поле названия пустое
+            if (!nameField.value.trim() && url) {
+                try {
+                    const urlObj = new URL(url);
+                    const domain = urlObj.hostname.replace('www.', '');
+                    if (domain) {
+                        const name = domain.charAt(0).toUpperCase() + domain.slice(1);
+                        nameField.value = name;
+                    }
+                } catch (e) {
+                    // Неверный URL, ничего не делаем
+                    console.log('Invalid URL format');
+                }
+            }
+        });
+    }
+    
+    // Валидация URL при отправке формы
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const urlValue = urlField ? urlField.value.trim() : '';
+            
+            if (!urlValue) {
+                e.preventDefault();
+                alert('Пожалуйста, введите URL адрес');
+                if (urlField) urlField.focus();
+                return;
+            }
+            
+            try {
+                new URL(urlValue);
+            } catch (e) {
+                e.preventDefault();
+                alert('Пожалуйста, введите корректный URL адрес (например: https://example.com)');
+                if (urlField) urlField.focus();
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

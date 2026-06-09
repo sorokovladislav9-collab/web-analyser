@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование веб-ресурса - {{ website.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>
+                        Редактирование веб-ресурса
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Название сайта</label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   value="{{ website.name }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="url" class="form-label">URL</label>
+                            <input type="url" class="form-control" id="url" name="url" 
+                                   value="{{ website.url }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Описание</label>
+                            <textarea class="form-control" id="description" name="description" rows="3">{{ website.description or '' }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Категория</label>
+                            <select class="form-control" id="category" name="category">
+                                <option value="business" {% if website.category == 'business' %}selected{% endif %}>Бизнес</option>
+                                <option value="blog" {% if website.category == 'blog' %}selected{% endif %}>Блог</option>
+                                <option value="portfolio" {% if website.category == 'portfolio' %}selected{% endif %}>Портфолио</option>
+                                <option value="ecommerce" {% if website.category == 'ecommerce' %}selected{% endif %}>E-commerce</option>
+                                <option value="other" {% if website.category == 'other' %}selected{% endif %}>Другое</option>
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-save me-2"></i>
+                                    Сохранить изменения
+                                </button>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <a href="{{ url_for('main.websites') }}" class="btn btn-secondary w-100">
+                                    <i class="fas fa-times me-2"></i>
+                                    Отмена
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urlInput = document.getElementById('url');
+    const nameInput = document.getElementById('name');
+    
+    // Автоматическое добавление протокола
+    urlInput.addEventListener('blur', function() {
+        let url = this.value.trim();
+        if (url && !url.match(/^https?:\/\//i)) {
+            this.value = 'https://' + url;
+        }
+    });
+    
+    // Валидация формы
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const url = urlInput.value.trim();
+        
+        if (!url.match(/^https?:\/\/.+\..+/)) {
+            e.preventDefault();
+            alert('Пожалуйста, введите корректный URL (например, https://example.com)');
+            urlInput.focus();
+            return;
+        }
+        
+        if (!nameInput.value.trim()) {
+            e.preventDefault();
+            alert('Пожалуйста, введите название сайта');
+            nameInput.focus();
+            return;
+        }
+    });
+});
+</script>
+{% endblock %}

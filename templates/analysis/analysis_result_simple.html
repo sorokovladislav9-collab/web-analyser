@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Результаты анализа - {{ name or url }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Результаты анализа</h2>
+                <div>
+                    <a href="{{ url }}" target="_blank" class="btn btn-outline-primary">
+                        <i class="fas fa-external-link-alt"></i> Открыть сайт
+                    </a>
+                    <a href="{{ url_for('analysis.quick_analyze') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Новый анализ
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        {{ name or url }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>URL:</strong> <a href="{{ url }}" target="_blank">{{ url }}</a></p>
+                    <p><strong>Дата анализа:</strong> {{ analysis.analysis_date }}</p>
+                    <p><strong>Время анализа:</strong> {{ "%.2f"|format(analysis.analysis_duration) }} сек.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if analysis.error %}
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>Ошибка анализа:</strong> {{ analysis.error_message }}
+    </div>
+    {% else %}
+
+    <!-- Общий балл -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-trophy"></i> Общая оценка</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h1 class="display-1 {% if analysis.overall_score >= 80 %}text-success{% elif analysis.overall_score >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                        {{ "%.1f"|format(analysis.overall_score) }}/100
+                    </h1>
+                    {% if analysis.overall_score >= 80 %}
+                        <p class="text-success">Отличное состояние</p>
+                    {% elif analysis.overall_score >= 60 %}
+                        <p class="text-warning">Хорошее состояние</p>
+                    {% else %}
+                        <p class="text-danger">Требует улучшения</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детальный анализ по категориям -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6><i class="fas fa-search text-primary"></i> SEO анализ</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <span class="h4">{{ "%.1f"|format(analysis.seo_analysis.score) }}/100</span>
+                    </div>
+                    
+                    <div class="progress mb-3">
+                        <div class="progress-bar bg-{% if analysis.seo_analysis.score >= 80 %}success{% elif analysis.seo_analysis.score >= 60 %}warning{% else %}danger{% endif %}" 
+                             role="progressbar" style="width: {{ analysis.seo_analysis.score }}%">
+                        </div>
+                    </div>
+                    
+                    <h6>Ключевые метрики:</h6>
+                    <ul class="list-unstyled small">
+                        <li><strong>Заголовок:</strong> {{ analysis.seo_analysis.title_analysis.title or 'Отсутствует' }}</li>
+                        <li><strong>Количество слов:</strong> {{ analysis.seo_analysis.content_analysis.word_count }}</li>
+                        <li><strong>Изображений без alt:</strong> {{ analysis.seo_analysis.images_analysis.images_without_alt }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6><i class="fas fa-tachometer-alt text-warning"></i> Производительность</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <span class="h4">{{ "%.1f"|format(analysis.performance_analysis.score) }}/100</span>
+                    </div>
+                    
+                    <div class="progress mb-3">
+                        <div class="progress-bar bg-{% if analysis.performance_analysis.score >= 80 %}success{% elif analysis.performance_analysis.score >= 60 %}warning{% else %}danger{% endif %}" 
+                             role="progressbar" style="width: {{ analysis.performance_analysis.score }}%">
+                        </div>
+                    </div>
+                    
+                    <h6>Ключевые метрики:</h6>
+                    <ul class="list-unstyled small">
+                        <li><strong>Время загрузки:</strong> {{ analysis.performance_analysis.load_time_analysis.load_time_ms }} мс</li>
+                        <li><strong>Размер страницы:</strong> {{ "%.2f"|format(analysis.performance_analysis.page_size_analysis.page_size_mb) }} МБ</li>
+                        <li><strong>Сжатие:</strong> {% if analysis.performance_analysis.network_analysis.has_compression %}Включено{% else %}Отключено{% endif %}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6><i class="fas fa-shield-alt text-success"></i> Безопасность</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <span class="h4">{{ "%.1f"|format(analysis.security_analysis.score) }}/100</span>
+                    </div>
+                    
+                    <div class="progress mb-3">
+                        <div class="progress-bar bg-{% if analysis.security_analysis.score >= 80 %}success{% elif analysis.security_analysis.score >= 60 %}warning{% else %}danger{% endif %}" 
+                             role="progressbar" style="width: {{ analysis.security_analysis.score }}%">
+                        </div>
+                    </div>
+                    
+                    <h6>Ключевые метрики:</h6>
+                    <ul class="list-unstyled small">
+                        <li><strong>HTTPS:</strong> {% if analysis.data_collection.has_https %}Включен{% else %}Отключен{% endif %}</li>
+                        <li><strong>Заголовки безопасности:</strong> {{ analysis.data_collection.security_headers.security_headers_count }} из 6</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6><i class="fas fa-universal-access text-info"></i> Доступность</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <span class="h4">{{ "%.1f"|format(analysis.accessibility_analysis.score) }}/100</span>
+                    </div>
+                    
+                    <div class="progress mb-3">
+                        <div class="progress-bar bg-{% if analysis.accessibility_analysis.score >= 80 %}success{% elif analysis.accessibility_analysis.score >= 60 %}warning{% else %}danger{% endif %}" 
+                             role="progressbar" style="width: {{ analysis.accessibility_analysis.score }}%">
+                        </div>
+                    </div>
+                    
+                    <h6>Ключевые метрики:</h6>
+                    <ul class="list-unstyled small">
+                        <li><strong>Alt-тексты:</strong> {{ analysis.accessibility_analysis.images_analysis.images_with_alt }} из {{ analysis.accessibility_analysis.images_analysis.images_count }}</li>
+                        <li><strong>ARIA метки:</strong> {{ analysis.accessibility_analysis.aria_analysis.aria_labels }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Рекомендации -->
+    {% if analysis.recommendations %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-lightbulb"></i> Рекомендации по улучшению</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for recommendation in analysis.recommendations %}
+                        <div class="col-md-6 mb-3">
+                            <div class="alert alert-info mb-2">
+                                <i class="fas fa-info-circle me-2"></i>{{ recommendation }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Экспорт -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-download"></i> Экспорт результатов</h5>
+                </div>
+                <div class="card-body">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary" onclick="alert('Функция экспорта будет доступна в следующей версии')">
+                            <i class="fas fa-file-code"></i> HTML отчет
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" onclick="alert('Функция экспорта будет доступна в следующей версии')">
+                            <i class="fas fa-file-pdf"></i> PDF отчет
+                        </button>
+                        <button type="button" class="btn btn-outline-success" onclick="alert('Функция экспорта будет доступна в следующей версии')">
+                            <i class="fas fa-file-code"></i> JSON данные
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}Веб-ресурсы - Система анализа веб-ресурсов{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>
+        <i class="fas fa-globe me-2"></i>Веб-ресурсы
+    </h1>
+    <a href="{{ url_for('main.add_website') }}" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Добавить ресурс
+    </a>
+</div>
+
+<!-- Фильтры -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="search" placeholder="Поиск..."
+                    value="{{ current_search }}">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" name="category">
+                    <option value="">Все категории</option>
+                    {% for category in categories %}
+                    <option value="{{ category }}" {% if current_category==category %}selected{% endif %}>
+                        {{ category }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-outline-primary w-100">
+                    <i class="fas fa-search me-2"></i>Поиск
+                </button>
+            </div>
+            <div class="col-md-2">
+                <a href="{{ url_for('main.websites') }}" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-times me-2"></i>Сброс
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Таблица веб-ресурсов -->
+{% if websites.items %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>URL</th>
+                <th>Категория</th>
+                <th>Дата добавления</th>
+                <th>Последний анализ</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for website in websites.items %}
+            <tr>
+                <td>
+                    <strong>{{ website.name }}</strong>
+                    {% if website.description %}
+                    <br><small class="text-muted">{{ website.description[:100] }}{% if website.description|length > 100
+                        %}...{% endif %}</small>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ website.url }}" target="_blank" class="text-decoration-none">
+                        {{ website.url[:50] }}{% if website.url|length > 50 %}...{% endif %}
+                        <i class="fas fa-external-link-alt ms-1"></i>
+                    </a>
+                </td>
+                <td>
+                    {% if website.category %}
+                    <span class="badge bg-info">{{ website.category }}</span>
+                    {% else %}
+                    <span class="text-muted">-</span>
+                    {% endif %}
+                </td>
+                <td>{{ website.created_at.strftime('%d.%m.%Y') }}</td>
+                <td>
+                    {% set latest_analysis = website.get_latest_analysis() %}
+                    {% if latest_analysis %}
+                    <span
+                        class="badge bg-{{ 'success' if latest_analysis.status == 'completed' else 'primary' if latest_analysis.status == 'running' else 'danger' if latest_analysis.status == 'failed' else 'secondary' }}">
+                        {{ latest_analysis.analysis_date.strftime('%d.%m.%Y') }}
+                    </span>
+                    {% else %}
+                    <span class="text-muted">Нет анализов</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a href="{{ url_for('main.start_analysis', website_id=website.id) }}"
+                            class="btn btn-success" title="Запустить анализ">
+                            <i class="fas fa-play"></i>
+                        </a>
+                        {% if latest_analysis and latest_analysis.status == 'completed' %}
+                        <a href="{{ url_for('main.view_analysis', analysis_id=latest_analysis.id) }}" class="btn btn-primary"
+                            title="Просмотр анализа">
+                            <i class="fas fa-chart-bar"></i>
+                        </a>
+                        {% endif %}
+                        <a href="{{ url_for('main.edit_website', id=website.id) }}" class="btn btn-outline-primary"
+                            title="Редактировать">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <button type="button" class="btn btn-outline-danger" onclick="confirmDelete('{{ website.id }}')" title="Удалить">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Пагинация -->
+{% if websites.pages > 1 %}
+<nav aria-label="Пагинация">
+    <ul class="pagination justify-content-center">
+        {% if websites.has_prev %}
+        <li class="page-item">
+            <a class="page-link"
+                href="{{ url_for('main.websites', page=websites.prev_num, search=current_search, category=current_category) }}">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+        </li>
+        {% endif %}
+
+        {% for page_num in websites.iter_pages() %}
+        {% if page_num %}
+        {% if page_num != websites.page %}
+        <li class="page-item">
+            <a class="page-link"
+                href="{{ url_for('main.websites', page=page_num, search=current_search, category=current_category) }}">
+                {{ page_num }}
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item active">
+            <span class="page-link">{{ page_num }}</span>
+        </li>
+        {% endif %}
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">...</span>
+        </li>
+        {% endif %}
+        {% endfor %}
+
+        {% if websites.has_next %}
+        <li class="page-item">
+            <a class="page-link"
+                href="{{ url_for('main.websites', page=websites.next_num, search=current_search, category=current_category) }}">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% else %}
+<div class="text-center py-5">
+    <i class="fas fa-globe fa-3x text-muted mb-3"></i>
+    <h4>Веб-ресурсы не найдены</h4>
+    <p class="text-muted">
+        {% if current_search or current_category %}
+        Попробуйте изменить параметры поиска или фильтры.
+        {% else %}
+        У вас пока нет добавленных веб-ресурсов.
+        {% endif %}
+    </p>
+    <a href="{{ url_for('main.add_website') }}" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Добавить первый ресурс
+    </a>
+</div>
+{% endif %}
+
+<!-- Форма удаления -->
+<form id="deleteForm" method="POST" style="display: none;">
+    <input type="hidden" name="website_id" id="deleteWebsiteId">
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function confirmDelete(websiteId) {
+        if (confirm('Вы уверены, что хотите удалить этот веб-ресурс? Все связанные анализы также будут удалены.')) {
+            document.getElementById('deleteWebsiteId').value = websiteId;
+
+            document.getElementById('deleteForm').action = '/website/' + websiteId + '/delete';
+            document.getElementById('deleteForm').submit();
+        }
+    }
+</script>
+{% endblock %}

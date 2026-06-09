@@ -1,0 +1,370 @@
+{% extends "base.html" %}
+
+{% block title %}Результаты сравнения - Система анализа веб-ресурсов{% endblock %}
+
+{% block content %}
+<!-- Скрытый элемент для передачи данных в JavaScript -->
+<div id="comparisonData" style="display: none;">{{ comparison | tojson }}</div>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Результаты сравнительного анализа</h2>
+            <p class="text-muted">Сравнение {{ websites_count }} веб-ресурсов</p>
+        </div>
+    </div>
+
+    {% if comparison.error %}
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>Ошибка:</strong> {{ comparison.message }}
+    </div>
+    {% else %}
+
+    <!-- Общий рейтинг -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-trophy"></i> Общий рейтинг сайтов</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Место</th>
+                                    <th>Сайт</th>
+                                    <th>Общий балл</th>
+                                    <th>SEO</th>
+                                    <th>Производительность</th>
+                                    <th>Безопасность</th>
+                                    <th>Доступность</th>
+                                    <th>UX</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rank, site_id, url, score in comparison.rankings.overall %}
+                                <tr class="{% if rank == 1 %}table-warning{% elif rank == 2 %}table-secondary{% elif rank == 3 %}table-info{% endif %}">
+                                    <td>
+                                        {% if rank == 1 %}
+                                            <i class="fas fa-medal text-warning"></i> {{ rank }}
+                                        {% elif rank == 2 %}
+                                            <i class="fas fa-medal text-secondary"></i> {{ rank }}
+                                        {% elif rank == 3 %}
+                                            <i class="fas fa-medal text-warning" style="color: #cd7f32 !important;"></i> {{ rank }}
+                                        {% else %}
+                                            {{ rank }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url }}" target="_blank" class="text-decoration-none">
+                                            {{ url }}
+                                            <i class="fas fa-external-link-alt small"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar {% if score >= 80 %}bg-success{% elif score >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                                 role="progressbar" style="width: {{ score }}%">
+                                                {{ "%.1f"|format(score) }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if comparison.overall_scores[site_id].seo_score >= 80 %}bg-success{% elif comparison.overall_scores[site_id].seo_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ comparison.overall_scores[site_id].seo_score }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if comparison.overall_scores[site_id].performance_score >= 80 %}bg-success{% elif comparison.overall_scores[site_id].performance_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ comparison.overall_scores[site_id].performance_score }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if comparison.overall_scores[site_id].security_score >= 80 %}bg-success{% elif comparison.overall_scores[site_id].security_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ comparison.overall_scores[site_id].security_score }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if comparison.overall_scores[site_id].accessibility_score >= 80 %}bg-success{% elif comparison.overall_scores[site_id].accessibility_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ comparison.overall_scores[site_id].accessibility_score }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if comparison.overall_scores[site_id].ux_score >= 80 %}bg-success{% elif comparison.overall_scores[site_id].ux_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ comparison.overall_scores[site_id].ux_score }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                    onclick="showDetails('{{ site_id }}')">
+                                                <i class="fas fa-info-circle"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-success" 
+                                                    onclick="generateReport('{{ site_id }}')">
+                                                <i class="fas fa-file-alt"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Статистика -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">{{ "%.1f"|format(comparison.overall_scores.values() | map(attribute='overall_score') | list | sum / comparison.overall_scores.values() | list | length) }}</h5>
+                    <p class="card-text">Средний общий балл</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">{{ "%.1f"|format(comparison.seo_comparison.statistics.average_score) }}</h5>
+                    <p class="card-text">Средний SEO балл</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-info">{{ "%.1f"|format(comparison.performance_comparison.statistics.average_score) }}</h5>
+                    <p class="card-text">Средняя производительность</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-success">{{ "%.1f"|format(comparison.security_comparison.statistics.https_adoption) }}%</h5>
+                    <p class="card-text">Использование HTTPS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детальная информация по категориям -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-search"></i> SEO - Топ 3</h6>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        {% for rank, site_id, url, score in comparison.rankings.seo[:3] %}
+                        <li>
+                            <strong>{{ url }}</strong> - {{ score }} баллов
+                            {% if comparison.seo_comparison.metrics[site_id].strengths %}
+                                <br><small class="text-muted">
+                                    Сильные стороны: {{ comparison.seo_comparison.metrics[site_id].strengths | join(', ') }}
+                                </small>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-tachometer-alt"></i> Производительность - Топ 3</h6>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        {% for rank, site_id, url, score in comparison.rankings.performance[:3] %}
+                        <li>
+                            <strong>{{ url }}</strong> - {{ score }} баллов
+                            <br><small class="text-muted">
+                                Время загрузки: {{ comparison.performance_comparison.metrics[site_id].load_time }} мс
+                            </small>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-shield-alt"></i> Безопасность - Топ 3</h6>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        {% for rank, site_id, url, score in comparison.rankings.security[:3] %}
+                        <li>
+                            <strong>{{ url }}</strong> - {{ score }} баллов
+                            <br><small class="text-muted">
+                                HTTPS: {% if comparison.security_comparison.metrics[site_id].has_https %}<i class="fas fa-check text-success"></i> Да{% else %}<i class="fas fa-times text-danger"></i> Нет{% endif %}
+                            </small>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-universal-access"></i> Доступность - Топ 3</h6>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        {% for rank, site_id, url, score in comparison.rankings.accessibility[:3] %}
+                        <li>
+                            <strong>{{ url }}</strong> - {{ score }} баллов
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Рекомендации -->
+    {% if comparison.recommendations %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-lightbulb"></i> Общие рекомендации</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for recommendation in comparison.recommendations %}
+                        <div class="col-md-6 mb-2">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> {{ recommendation }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Экспорт результатов -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-download"></i> Экспорт результатов</h5>
+                </div>
+                <div class="card-body">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary" onclick="exportComparisonReport('html')">
+                            <i class="fas fa-file-code"></i> HTML отчет
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" onclick="exportComparisonReport('txt')">
+                            <i class="fas fa-file-alt"></i> Текстовый отчет
+                        </button>
+                        <button type="button" class="btn btn-outline-success" onclick="exportComparisonReport('json')">
+                            <i class="fas fa-file-code"></i> JSON
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+</div>
+
+<!-- Модальное окно для детальной информации -->
+<div class="modal fade" id="detailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Детальная информация</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detailsContent">
+                <!-- Контент загружается динамически -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Временно отключаем проблемный JavaScript
+// const comparisonData = {{ comparison | tojson }};
+
+function showDetails(siteId) {
+    alert('Детальная информация временно недоступна');
+}
+
+function generateReport(siteId) {
+    alert('Генерация отчета временно недоступна');
+}
+
+function exportComparisonReport(format) {
+    // Получаем данные из скрытого элемента
+    const comparisonDataElement = document.getElementById('comparisonData');
+    let comparisonData = {};
+    
+    if (comparisonDataElement) {
+        try {
+            comparisonData = JSON.parse(comparisonDataElement.textContent);
+        } catch (e) {
+            console.error('Error parsing comparison data:', e);
+            alert('Ошибка при получении данных сравнения');
+            return;
+        }
+    }
+    
+    // Отправляем запрос на генерацию отчета сравнения
+    fetch('/reports/generate_comparison_report', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            comparison_data: comparisonData,
+            format: format
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.blob();
+        }
+        throw new Error('Ошибка при генерации отчета');
+    })
+    .then(blob => {
+        // Создаем ссылку для скачивания файла
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `comparison_report_${new Date().toISOString().slice(0,10)}.${format}`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ошибка при экспорте отчета: ' + error.message);
+    });
+}
+</script>
+{% endblock %}

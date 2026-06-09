@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Система анализа веб-ресурсов{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto text-center">
+        <h1 class="display-4 mb-4">
+            <i class="fas fa-chart-line text-primary me-3"></i>
+            Система анализа веб-ресурсов
+        </h1>
+        
+        <p class="lead mb-5">
+            Комплексный анализ качественных показателей веб-ресурсов: SEO, производительность, 
+            доступность, безопасность и пользовательский опыт.
+        </p>
+        
+        {% if not current_user.is_authenticated %}
+        <div class="row mb-5">
+            <div class="col-md-6 mb-3">
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg w-100">
+                    <i class="fas fa-sign-in-alt me-2"></i>Войти в систему
+                </a>
+            </div>
+            <div class="col-md-6 mb-3">
+                <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-lg w-100">
+                    <i class="fas fa-user-plus me-2"></i>Зарегистрироваться
+                </a>
+            </div>
+        </div>
+        {% else %}
+        <div class="row mb-5">
+            <div class="col-md-4 mb-3">
+                <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg w-100">
+                    <i class="fas fa-tachometer-alt me-2"></i>Дашборд
+                </a>
+            </div>
+            <div class="col-md-4 mb-3">
+                <a href="{{ url_for('analysis.compare_websites') }}" class="btn btn-success btn-lg w-100">
+                    <i class="fas fa-chart-bar me-2"></i>Сравнить сайты
+                </a>
+            </div>
+            <div class="col-md-4 mb-3">
+                <a href="{{ url_for('main.websites') }}" class="btn btn-info btn-lg w-100">
+                    <i class="fas fa-list me-2"></i>Мои сайты
+                </a>
+            </div>
+        </div>
+        
+        <!-- Форма быстрого анализа -->
+        <div class="card mb-5">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-search me-2"></i>Быстрый анализ сайта
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('analysis.quick_analyze') }}">
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <input type="url" class="form-control form-control-lg" name="url" 
+                                   placeholder="https://example.com" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-play me-2"></i>Анализировать
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <input type="text" class="form-control" name="name" 
+                                   placeholder="Название сайта (опционально)">
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <input type="text" class="form-control" name="description" 
+                                   placeholder="Описание (опционально)">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Статистика -->
+<div class="row mb-5">
+    <div class="col-lg-12">
+        <h2 class="text-center mb-4">Общая статистика системы</h2>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-globe fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Веб-ресурсы</h5>
+                <p class="card-text display-6">{{ stats.total_websites }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-chart-bar fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Анализы</h5>
+                <p class="card-text display-6">{{ stats.total_analyses }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-users fa-3x text-info mb-3"></i>
+                <h5 class="card-title">Пользователи</h5>
+                <p class="card-text display-6">{{ stats.total_users }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-clock fa-3x text-warning mb-3"></i>
+                <h5 class="card-title">Активность</h5>
+                <p class="card-text display-6">{{ stats.recent_analyses|length }}</p>
+                <small class="text-muted">за последние 24ч</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Возможности -->
+<div class="row mb-5">
+    <div class="col-lg-12">
+        <h2 class="text-center mb-4">Возможности системы</h2>
+    </div>
+    
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-search text-primary me-2"></i>SEO анализ
+                </h5>
+                <p class="card-text">
+                    Анализ мета-тегов, заголовков, структуры контента, 
+                    внутренних и внешних ссылок для оптимизации поисковых систем.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-tachometer-alt text-success me-2"></i>Производительность
+                </h5>
+                <p class="card-text">
+                    Измерение скорости загрузки, Core Web Vitals, 
+                    оптимизации ресурсов и времени интерактивности.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-universal-access text-info me-2"></i>Доступность
+                </h5>
+                <p class="card-text">
+                    Проверка соответствия стандартам WCAG, 
+                    доступности для людей с ограниченными возможностями.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-shield-alt text-warning me-2"></i>Безопасность
+                </h5>
+                <p class="card-text">
+                    Анализ HTTPS, заголовков безопасности, 
+                    уязвимостей и смешанного контента.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-mobile-alt text-danger me-2"></i>UX/UI
+                </h5>
+                <p class="card-text">
+                    Оценка пользовательского опыта, 
+                    мобильной адаптации и удобства интерфейса.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-balance-scale text-secondary me-2"></i>Сравнение
+                </h5>
+                <p class="card-text">
+                    Сравнительный анализ нескольких веб-ресурсов 
+                    с визуализацией результатов в виде графиков и таблиц.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Последние анализы -->
+{% if stats.recent_analyses %}
+<div class="row">
+    <div class="col-lg-12">
+        <h2 class="text-center mb-4">Последние анализы</h2>
+        
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Веб-ресурс</th>
+                        <th>Статус</th>
+                        <th>Дата</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for analysis in stats.recent_analyses %}
+                    <tr>
+                        <td>
+                            <a href="#" class="text-decoration-none">
+                                {{ analysis.website.name }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if analysis.status == 'completed' %}
+                                <span class="badge bg-success">Завершен</span>
+                            {% elif analysis.status == 'running' %}
+                                <span class="badge bg-primary">Выполняется</span>
+                            {% elif analysis.status == 'failed' %}
+                                <span class="badge bg-danger">Ошибка</span>
+                            {% else %}
+                                <span class="badge bg-secondary">В очереди</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ analysis.analysis_date.strftime('%d.%m.%Y %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

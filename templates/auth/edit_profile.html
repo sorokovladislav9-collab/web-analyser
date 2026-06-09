@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование профиля - Система анализа веб-ресурсов{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-user-edit me-2"></i>Редактирование профиля
+                </h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Имя пользователя</label>
+                        <input type="text" class="form-control" id="username" name="username" 
+                               value="{{ user.username }}" readonly>
+                        <small class="form-text text-muted">Имя пользователя нельзя изменить</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{{ user.email }}" required>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    <h5>Изменение пароля</h5>
+                    <p class="text-muted">Оставьте поля пустыми, если не хотите менять пароль</p>
+                    
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label">Текущий пароль</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" id="current_password" name="current_password">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">Новый пароль</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" id="new_password" name="new_password">
+                        </div>
+                        <small class="form-text text-muted">Минимум 6 символов</small>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="confirm_password" class="form-label">Подтверждение нового пароля</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password">
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Сохранить изменения
+                        </button>
+                        <a href="{{ url_for('auth.profile') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('confirm_password').addEventListener('input', function() {
+    const newPassword = document.getElementById('new_password').value;
+    const confirmPassword = this.value;
+    
+    if (newPassword && confirmPassword) {
+        if (newPassword !== confirmPassword) {
+            this.setCustomValidity('Пароли не совпадают');
+        } else {
+            this.setCustomValidity('');
+        }
+    } else {
+        this.setCustomValidity('');
+    }
+});
+
+document.getElementById('new_password').addEventListener('input', function() {
+    const confirmPassword = document.getElementById('confirm_password').value;
+    
+    if (this.value && confirmPassword) {
+        if (this.value !== confirmPassword) {
+            document.getElementById('confirm_password').setCustomValidity('Пароли не совпадают');
+        } else {
+            document.getElementById('confirm_password').setCustomValidity('');
+        }
+    }
+});
+
+// Проверяем, что текущий пароль введен при смене пароля
+document.querySelector('form').addEventListener('submit', function(e) {
+    const newPassword = document.getElementById('new_password').value;
+    const currentPassword = document.getElementById('current_password').value;
+    
+    if (newPassword && !currentPassword) {
+        e.preventDefault();
+        alert('Для смены пароля введите текущий пароль');
+        document.getElementById('current_password').focus();
+    }
+});
+</script>
+{% endblock %}

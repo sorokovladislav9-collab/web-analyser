@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Сравнительный анализ - Система анализа веб-ресурсов{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Сравнительный анализ веб-ресурсов</h2>
+            <p class="text-muted">Сравните до 10 сайтов по различным метрикам качества</p>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Анализ по URL</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('analysis.compare_websites') }}">
+                        <div class="mb-3">
+                            <label for="urls" class="form-label">URL сайтов (каждый с новой строки)</label>
+                            <textarea class="form-control" id="urls" name="urls" rows="6" 
+                                placeholder="https://example1.com&#10;https://example2.com&#10;https://example3.com" required></textarea>
+                            <div class="form-text">Введите от 2 до 10 URL для сравнения</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-chart-bar"></i> Начать сравнение
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Анализ из базы данных</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('analysis.compare_websites') }}">
+                        <div class="mb-3">
+                            <label for="website_ids" class="form-label">Выберите сайты для сравнения</label>
+                            <select class="form-select" id="website_ids" name="website_ids" multiple size="6">
+                                {% if websites %}
+                                    {% for website in websites %}
+                                        <option value="{{ website.id }}">{{ website.name }} ({{ website.url }})</option>
+                                    {% endfor %}
+                                {% else %}
+                                    <option disabled>Нет доступных сайтов</option>
+                                {% endif %}
+                            </select>
+                            <div class="form-text">Удерживайте Ctrl для выбора нескольких сайтов</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-chart-bar"></i> Сравнить выбранные
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Возможности сравнительного анализа</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-search text-primary"></i> SEO анализ</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Оптимизация заголовков</li>
+                                <li><i class="fas fa-check text-success"></i> Мета-теги и описания</li>
+                                <li><i class="fas fa-check text-success"></i> Структура контента</li>
+                                <li><i class="fas fa-check text-success"></i> Внутренние и внешние ссылки</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-tachometer-alt text-warning"></i> Производительность</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Время загрузки</li>
+                                <li><i class="fas fa-check text-success"></i> Размер страницы</li>
+                                <li><i class="fas fa-check text-success"></i> Core Web Vitals</li>
+                                <li><i class="fas fa-check text-success"></i> Оптимизация ресурсов</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-shield-alt text-success"></i> Безопасность</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> HTTPS сертификат</li>
+                                <li><i class="fas fa-check text-success"></i> Заголовки безопасности</li>
+                                <li><i class="fas fa-check text-success"></i> Проверка уязвимостей</li>
+                                <li><i class="fas fa-check text-success"></i> Смешанный контент</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-universal-access text-info"></i> Доступность и UX</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Соответствие WCAG</li>
+                                <li><i class="fas fa-check text-success"></i> Мобильная адаптация</li>
+                                <li><i class="fas fa-check text-success"></i> Навигация и юзабилити</li>
+                                <li><i class="fas fa-check text-success"></i> Читаемость контента</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Результаты сравнения</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center text-muted">
+                        <i class="fas fa-chart-bar fa-3x mb-3"></i>
+                        <p>Запустите сравнительный анализ, чтобы увидеть результаты здесь</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Валидация формы URL
+    const urlForm = document.querySelector('form[action*="compare"]');
+    if (urlForm) {
+        urlForm.addEventListener('submit', function(e) {
+            const urlsTextarea = document.getElementById('urls');
+            const urls = urlsTextarea.value.trim().split('\n').filter(url => url.trim());
+            
+            if (urls.length < 2) {
+                e.preventDefault();
+                alert('Введите минимум 2 URL для сравнения');
+                return;
+            }
+            
+            if (urls.length > 10) {
+                e.preventDefault();
+                alert('Максимум 10 URL для сравнения');
+                return;
+            }
+            
+            // Простая валидация URL
+            for (let url of urls) {
+                if (!url.match(/^https?:\/\/.+/)) {
+                    e.preventDefault();
+                    alert(`Неверный формат URL: ${url}`);
+                    return;
+                }
+            }
+        });
+    }
+    
+    // Валидация формы выбора сайтов
+    const selectForm = document.querySelectorAll('form[action*="compare"]')[1];
+    if (selectForm) {
+        selectForm.addEventListener('submit', function(e) {
+            const select = document.getElementById('website_ids');
+            const selected = select.selectedOptions;
+            
+            if (selected.length < 2) {
+                e.preventDefault();
+                alert('Выберите минимум 2 сайта для сравнения');
+                return;
+            }
+            
+            if (selected.length > 10) {
+                e.preventDefault();
+                alert('Максимум 10 сайтов для сравнения');
+                return;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

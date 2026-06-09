@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Быстрый анализ - Система анализа веб-ресурсов{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">
+                        <i class="fas fa-search me-2"></i>
+                        Быстрый анализ сайта
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST">
+                        <div class="mb-4">
+                            <label for="url" class="form-label">URL сайта *</label>
+                            <input type="url" class="form-control form-control-lg" id="url" name="url" 
+                                   placeholder="https://example.com" required>
+                            <div class="form-text">Введите полный URL сайта с протоколом (http:// или https://)</div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">Название сайта</label>
+                                <input type="text" class="form-control" id="name" name="name" 
+                                       placeholder="Название (опционально)">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="description" class="form-label">Описание</label>
+                                <input type="text" class="form-control" id="description" name="description" 
+                                       placeholder="Краткое описание (опционально)">
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-play me-2"></i>
+                                Начать анализ
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Информация об анализе -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5>Что будет проанализировано:</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-search text-primary"></i> SEO оптимизация</h6>
+                            <ul class="list-unstyled small">
+                                <li>• Заголовки и мета-теги</li>
+                                <li>• Структура контента</li>
+                                <li>• Внутренние ссылки</li>
+                                <li>• Изображения и alt-тексты</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-tachometer-alt text-warning"></i> Производительность</h6>
+                            <ul class="list-unstyled small">
+                                <li>• Время загрузки</li>
+                                <li>• Размер страницы</li>
+                                <li>• Оптимизация ресурсов</li>
+                                <li>• Core Web Vitals</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-shield-alt text-success"></i> Безопасность</h6>
+                            <ul class="list-unstyled small">
+                                <li>• HTTPS сертификат</li>
+                                <li>• Заголовки безопасности</li>
+                                <li>• Проверка уязвимостей</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-universal-access text-info"></i> Доступность</h6>
+                            <ul class="list-unstyled small">
+                                <li>• Соответствие WCAG</li>
+                                <li>• Мобильная адаптация</li>
+                                <li>• Навигация и юзабилити</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const urlInput = document.getElementById('url');
+    
+    form.addEventListener('submit', function(e) {
+        const url = urlInput.value.trim();
+        
+        // Простая валидация URL
+        if (!url.match(/^https?:\/\/.+/)) {
+            e.preventDefault();
+            alert('Пожалуйста, введите полный URL с протоколом (http:// или https://)');
+            urlInput.focus();
+            return;
+        }
+    });
+    
+    // Автоматическое добавление протокола
+    urlInput.addEventListener('blur', function() {
+        let url = this.value.trim();
+        if (url && !url.match(/^https?:\/\/.+/)) {
+            this.value = 'https://' + url;
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,109 @@
+@startuml Use Case Diagram
+left to right direction
+
+skinparam usecase {
+    BackgroundColor LightBlue
+    BorderColor DarkBlue
+}
+
+skinparam actor {
+    BackgroundColor LightYellow
+    BorderColor DarkOrange
+}
+
+actor "Гость" as Guest
+actor "Пользователь" as User
+actor "Аналитик" as Analyst
+actor "Администратор" as Admin
+
+package "Аутентификация" {
+    usecase "Войти в систему" as UC_Login
+    usecase "Зарегистрироваться" as UC_Register
+    usecase "Выйти из системы" as UC_Logout
+    usecase "Редактировать профиль" as UC_EditProfile
+}
+
+package "Управление веб-ресурсами" {
+    usecase "Добавить веб-ресурс" as UC_AddWebsite
+    usecase "Просмотреть список веб-ресурсов" as UC_ViewWebsites
+    usecase "Редактировать веб-ресурс" as UC_EditWebsite
+    usecase "Удалить веб-ресурс" as UC_DeleteWebsite
+    usecase "Просмотреть детальную информацию о веб-ресурсе" as UC_ViewWebsiteDetails
+}
+
+package "Анализ веб-ресурсов" {
+    usecase "Запустить анализ веб-ресурса" as UC_RunAnalysis
+    usecase "Просмотреть результаты анализа" as UC_ViewAnalysis
+    usecase "Быстрый анализ без регистрации" as UC_QuickAnalysis
+    usecase "Сравнить несколько веб-ресурсов" as UC_CompareWebsites
+    usecase "Просмотреть результаты сравнения" as UC_ViewComparison
+}
+
+package "Генерация отчетов" {
+    usecase "Сгенерировать HTML отчет" as UC_GenerateHTML
+    usecase "Сгенерировать PDF отчет" as UC_GeneratePDF
+    usecase "Сгенерировать JSON отчет" as UC_GenerateJSON
+    usecase "Сгенерировать DOCX отчет" as UC_GenerateDOCX
+    usecase "Сгенерировать XLSX отчет" as UC_GenerateXLSX
+}
+
+package "REST API" {
+    usecase "Получить список веб-ресурсов через API" as UC_API_GetWebsites
+    usecase "Создать веб-ресурс через API" as UC_API_CreateWebsite
+    usecase "Получить анализ через API" as UC_API_GetAnalysis
+    usecase "Получить статистику через API" as UC_API_GetStats
+}
+
+package "Администрирование" {
+    usecase "Управлять пользователями" as UC_ManageUsers
+    usecase "Просматривать все веб-ресурсы" as UC_ViewAllWebsites
+    usecase "Просматривать все анализы" as UC_ViewAllAnalyses
+}
+
+' Отношения
+Guest --> UC_Register
+Guest --> UC_Login
+Guest --> UC_QuickAnalysis
+
+User --> UC_Logout
+User --> UC_EditProfile
+User --> UC_ViewWebsites
+User --> UC_ViewWebsiteDetails
+User --> UC_ViewAnalysis
+
+Analyst --> UC_AddWebsite
+Analyst --> UC_EditWebsite
+Analyst --> UC_DeleteWebsite
+Analyst --> UC_RunAnalysis
+Analyst --> UC_CompareWebsites
+Analyst --> UC_ViewComparison
+Analyst --> UC_GenerateHTML
+Analyst --> UC_GeneratePDF
+Analyst --> UC_GenerateJSON
+Analyst --> UC_GenerateDOCX
+Analyst --> UC_GenerateXLSX
+Analyst --> UC_API_GetWebsites
+Analyst --> UC_API_CreateWebsite
+Analyst --> UC_API_GetAnalysis
+Analyst --> UC_API_GetStats
+
+Admin --> UC_ManageUsers
+Admin --> UC_ViewAllWebsites
+Admin --> UC_ViewAllAnalyses
+
+' Иерархия акторов
+User <|-- Analyst
+Analyst <|-- Admin
+
+' Include отношения
+UC_RunAnalysis ..> UC_ViewAnalysis : <<include>>
+UC_CompareWebsites ..> UC_ViewComparison : <<include>>
+UC_AddWebsite ..> UC_RunAnalysis : <<include>>
+
+' Extend отношения
+UC_GeneratePDF ..> UC_GenerateHTML : <<extend>>
+UC_GenerateJSON ..> UC_GenerateHTML : <<extend>>
+UC_GenerateDOCX ..> UC_GenerateHTML : <<extend>>
+UC_GenerateXLSX ..> UC_GenerateHTML : <<extend>>
+
+@enduml

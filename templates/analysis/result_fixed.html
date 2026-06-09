@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Результаты анализа{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Результаты анализа</h2>
+            <p><strong>URL:</strong> <a href="{{ url }}" target="_blank">{{ url }}</a></p>
+            <p><strong>Дата анализа:</strong> {{ analysis.analysis_date }}</p>
+            <p><strong>Время анализа:</strong> {{ "%.2f"|format(analysis.analysis_duration) }} сек.</p>
+        </div>
+    </div>
+
+    {% if analysis.error %}
+    <div class="alert alert-danger">
+        <strong>Ошибка анализа:</strong> {{ analysis.error_message }}
+    </div>
+    {% else %}
+
+    <!-- Общий балл -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Общая оценка</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h1 class="display-1 {% if analysis.overall_score >= 80 %}text-success{% elif analysis.overall_score >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                        {{ "%.1f"|format(analysis.overall_score) }}/100
+                    </h1>
+                    {% if analysis.overall_score >= 80 %}
+                        <p class="text-success">Отличное состояние</p>
+                    {% elif analysis.overall_score >= 60 %}
+                        <p class="text-warning">Хорошее состояние</p>
+                    {% else %}
+                        <p class="text-danger">Требует улучшения</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детальный анализ по категориям -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6>SEO анализ</h6>
+                </div>
+                <div class="card-body">
+                    <h4>{{ "%.1f"|format(analysis.seo_analysis.score) }}/100</h4>
+                    <div class="progress mb-3">
+                        <div class="progress-bar {% if analysis.seo_analysis.score >= 80 %}bg-success{% elif analysis.seo_analysis.score >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                             role="progressbar" style="width: {{ analysis.seo_analysis.score }}%">
+                        </div>
+                    </div>
+                    <h6>Ключевые метрики:</h6>
+                    <ul class="list-unstyled small">
+                        <li><strong>Заголовок:</strong> {{ analysis.seo_analysis.title_analysis.title or 'Отсутствует' }}</li>
+                        <li><strong>Количество слов:</strong> {{ analysis.seo_analysis.content_analysis.word_count }}</li>
+                        <li><strong>Изображений без alt:</strong> {{ analysis.seo_analysis.images_analysis.images_without_alt }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6>Производительность</h6>
+                </div>
+                <div class="card-body">
+                    <h4>{{ "%.1f"|format(analysis.performance_analysis.score) }}/100</h4>
+                    <div class="progress mb-3">
+                        <div class="progress-bar {% if analysis.performance_analysis.score >= 80 %}bg-success{% elif analysis.performance_analysis.score >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                             role="progressbar" style="width: {{ analysis.performance_analysis.score }}%">
+                        </div>
+                    </div>
+                    <h6>Ключевые метрики:</h6>
+                    <ul class="list-unstyled small">
+                        <li><strong>Время загрузки:</strong> {{ analysis.performance_analysis.load_time_analysis.load_time_ms }} мс</li>
+                        <li><strong>Размер страницы:</strong> {{ "%.2f"|format(analysis.performance_analysis.page_size_analysis.page_size_mb) }} МБ</li>
+                        <li><strong>Сжатие:</strong> {% if analysis.performance_analysis.network_analysis.has_compression %}Включено{% else %}Отключено{% endif %}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6>Безопасность</h6>
+                </div>
+                <div class="card-body">
+                    <h4>{{ "%.1f"|format(analysis.security_analysis.score) }}/100</h4>
+                    <div class="progress mb-3">
+                        <div class="progress-bar {% if analysis.security_analysis.score >= 80 %}bg-success{% elif analysis.security_analysis.score >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                             role="progressbar" style="width: {{ analysis.security_analysis.score }}%">
+                        </div>
+                    </div>
+                    <h6>Ключевые метрики:</h6>
+                    <ul class="list-unstyled small">
+                        <li><strong>HTTPS:</strong> {% if analysis.data_collection.has_https %}Включен{% else %}Отключен{% endif %}</li>
+                        <li><strong>Заголовки безопасности:</strong> {{ analysis.data_collection.security_headers.security_headers_count }} из 6</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6>Доступность</h6>
+                </div>
+                <div class="card-body">
+                    <h4>{{ "%.1f"|format(analysis.accessibility_analysis.score) }}/100</h4>
+                    <div class="progress mb-3">
+                        <div class="progress-bar {% if analysis.accessibility_analysis.score >= 80 %}bg-success{% elif analysis.accessibility_analysis.score >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                             role="progressbar" style="width: {{ analysis.accessibility_analysis.score }}%">
+                        </div>
+                    </div>
+                    <h6>Ключевые метрики:</h6>
+                    <ul class="list-unstyled small">
+                        <li><strong>Изображения с alt:</strong> {{ analysis.accessibility_analysis.images_accessibility.images_with_alt }} из {{ analysis.accessibility_analysis.images_accessibility.total_images }}</li>
+                        <li><strong>ARIA метки:</strong> {{ analysis.accessibility_analysis.aria_usage.aria_labels_count }}</li>
+                        <li><strong>Цветовая контрастность:</strong> {{ analysis.accessibility_analysis.color_contrast.contrast_ratio }}:1</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Рекомендации -->
+    {% if analysis.recommendations %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Рекомендации по улучшению</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for recommendation in analysis.recommendations %}
+                        <div class="col-md-6 mb-3">
+                            <div class="alert alert-info mb-2">
+                                <i class="fas fa-info-circle me-2"></i>{{ recommendation }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Действия -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Действия</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{{ url_for('analysis.quick_analyze') }}" class="btn btn-primary">
+                        Новый анализ
+                    </a>
+                    <a href="{{ url_for('analysis.compare_websites') }}" class="btn btn-success">
+                        Сравнить сайты
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+</div>
+{% endblock %}

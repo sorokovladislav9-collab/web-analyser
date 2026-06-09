@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль - Система анализа веб-ресурсов{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-user-circle me-2"></i>Профиль пользователя
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-user-circle fa-5x text-primary"></i>
+                        </div>
+                        <h5>{{ user.username }}</h5>
+                        <span class="badge bg-{{ 'danger' if user.role == 'admin' else 'info' if user.role == 'analyst' else 'secondary' }}">
+                            {{ 'Администратор' if user.role == 'admin' else 'Аналитик' if user.role == 'analyst' else 'Просмотр' }}
+                        </span>
+                    </div>
+                    
+                    <div class="col-md-8">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><strong>Имя пользователя:</strong></td>
+                                <td>{{ user.username }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Email:</strong></td>
+                                <td>{{ user.email }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Роль:</strong></td>
+                                <td>
+                                    <span class="badge bg-{{ 'danger' if user.role == 'admin' else 'info' if user.role == 'analyst' else 'secondary' }}">
+                                        {{ 'Администратор' if user.role == 'admin' else 'Аналитик' if user.role == 'analyst' else 'Просмотр' }}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Дата регистрации:</strong></td>
+                                <td>{{ user.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Статус:</strong></td>
+                                <td>
+                                    {% if user.is_active %}
+                                        <span class="badge bg-success">Активен</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Неактивен</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <div class="mt-3">
+                            <a href="{{ url_for('auth.edit_profile') }}" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i>Редактировать профиль
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Статистика пользователя -->
+        <div class="card shadow mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>Статистика
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <h4 class="text-primary">{{ user.websites|length }}</h4>
+                            <p class="mb-0">Веб-ресурсы</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <h4 class="text-success">{{ user.analyses|length }}</h4>
+                            <p class="mb-0">Анализы</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <h4 class="text-info">{{ user.comparisons|length }}</h4>
+                            <p class="mb-0">Сравнения</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <h4 class="text-warning">{{ user.api_keys|length }}</h4>
+                            <p class="mb-0">API ключи</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
