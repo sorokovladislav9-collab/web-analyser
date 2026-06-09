@@ -30285,3 +30285,191 @@ WHERE analyses.user_id = ? AND analyses.status = ?) AS anon_1
 2026-05-31 19:25:33,802 - sqlalchemy.engine.Engine - INFO - [cached since 4245s ago] (4, 'running')
 2026-05-31 19:25:33,804 - sqlalchemy.engine.Engine - INFO - ROLLBACK
 2026-05-31 19:25:33,804 - werkzeug - INFO - 127.0.0.1 - - [31/May/2026 19:25:33] "GET /api/analyses?status=running HTTP/1.1" 200 -
+2026-06-09 17:54:00,402 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-06-09 17:54:00,403 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("users")
+2026-06-09 17:54:00,403 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:00,406 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("websites")
+2026-06-09 17:54:00,406 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:00,406 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("analyses")
+2026-06-09 17:54:00,407 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:00,407 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("seo_metrics")
+2026-06-09 17:54:00,408 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:00,408 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2026-06-09 17:54:00,410 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:00,410 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("accessibility_metrics")
+2026-06-09 17:54:00,410 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:00,411 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("security_metrics")
+2026-06-09 17:54:00,411 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:00,412 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("ux_metrics")
+2026-06-09 17:54:00,412 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:00,413 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("reports")
+2026-06-09 17:54:00,413 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:00,414 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("comparisons")
+2026-06-09 17:54:00,414 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:00,415 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("comparison_websites")
+2026-06-09 17:54:00,415 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:00,415 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("api_keys")
+2026-06-09 17:54:00,416 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:00,416 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2026-06-09 17:54:00,417 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:00,418 - sqlalchemy.engine.Engine - INFO - COMMIT
+2026-06-09 17:54:00,464 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-06-09 17:54:00,468 - sqlalchemy.engine.Engine - INFO - SELECT users.id AS users_id, users.username AS users_username, users.email AS users_email, users.password_hash AS users_password_hash, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.is_active AS users_is_active 
+FROM users 
+WHERE users.username = ?
+ LIMIT ? OFFSET ?
+2026-06-09 17:54:00,469 - sqlalchemy.engine.Engine - INFO - [generated in 0.00065s] ('admin', 1, 0)
+2026-06-09 17:54:00,470 - __main__ - INFO - База данных успешно инициализирована
+2026-06-09 17:54:00,470 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-06-09 17:54:01,867 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://100.90.154.125:5000
+2026-06-09 17:54:01,867 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-06-09 17:54:01,870 - werkzeug - INFO -  * Restarting with stat
+2026-06-09 17:54:45,749 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-06-09 17:54:45,750 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("users")
+2026-06-09 17:54:45,750 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:45,752 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("websites")
+2026-06-09 17:54:45,752 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:45,753 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("analyses")
+2026-06-09 17:54:45,754 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:45,754 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("seo_metrics")
+2026-06-09 17:54:45,755 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:45,755 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2026-06-09 17:54:45,755 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:45,756 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("accessibility_metrics")
+2026-06-09 17:54:45,757 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:45,757 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("security_metrics")
+2026-06-09 17:54:45,757 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:45,758 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("ux_metrics")
+2026-06-09 17:54:45,759 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:45,760 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("reports")
+2026-06-09 17:54:45,761 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:45,762 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("comparisons")
+2026-06-09 17:54:45,763 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:45,764 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("comparison_websites")
+2026-06-09 17:54:45,764 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:45,766 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("api_keys")
+2026-06-09 17:54:45,767 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:45,768 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2026-06-09 17:54:45,769 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 17:54:45,771 - sqlalchemy.engine.Engine - INFO - COMMIT
+2026-06-09 17:54:45,823 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-06-09 17:54:45,827 - sqlalchemy.engine.Engine - INFO - SELECT users.id AS users_id, users.username AS users_username, users.email AS users_email, users.password_hash AS users_password_hash, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.is_active AS users_is_active 
+FROM users 
+WHERE users.username = ?
+ LIMIT ? OFFSET ?
+2026-06-09 17:54:45,827 - sqlalchemy.engine.Engine - INFO - [generated in 0.00069s] ('admin', 1, 0)
+2026-06-09 17:54:45,829 - __main__ - INFO - База данных успешно инициализирована
+2026-06-09 17:54:45,829 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-06-09 17:54:45,846 - werkzeug - WARNING -  * Debugger is active!
+2026-06-09 17:54:45,876 - werkzeug - INFO -  * Debugger PIN: 725-734-167
+2026-06-09 18:36:04,164 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-06-09 18:36:04,165 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("users")
+2026-06-09 18:36:04,165 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:04,169 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("websites")
+2026-06-09 18:36:04,169 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:04,170 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("analyses")
+2026-06-09 18:36:04,170 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:04,170 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("seo_metrics")
+2026-06-09 18:36:04,170 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:04,171 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2026-06-09 18:36:04,171 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:04,171 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("accessibility_metrics")
+2026-06-09 18:36:04,172 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:04,172 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("security_metrics")
+2026-06-09 18:36:04,172 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:04,173 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("ux_metrics")
+2026-06-09 18:36:04,173 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:04,173 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("reports")
+2026-06-09 18:36:04,174 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:04,175 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("comparisons")
+2026-06-09 18:36:04,175 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:04,175 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("comparison_websites")
+2026-06-09 18:36:04,175 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:04,176 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("api_keys")
+2026-06-09 18:36:04,176 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:04,177 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2026-06-09 18:36:04,177 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:04,178 - sqlalchemy.engine.Engine - INFO - COMMIT
+2026-06-09 18:36:04,228 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-06-09 18:36:04,230 - sqlalchemy.engine.Engine - INFO - SELECT users.id AS users_id, users.username AS users_username, users.email AS users_email, users.password_hash AS users_password_hash, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.is_active AS users_is_active 
+FROM users 
+WHERE users.username = ?
+ LIMIT ? OFFSET ?
+2026-06-09 18:36:04,232 - sqlalchemy.engine.Engine - INFO - [generated in 0.00076s] ('admin', 1, 0)
+2026-06-09 18:36:04,234 - __main__ - INFO - База данных успешно инициализирована
+2026-06-09 18:36:04,234 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-06-09 18:36:04,292 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.107:5000
+2026-06-09 18:36:04,294 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-06-09 18:36:04,294 - werkzeug - INFO -  * Restarting with stat
+2026-06-09 18:36:06,926 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-06-09 18:36:06,926 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("users")
+2026-06-09 18:36:06,926 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:06,928 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("websites")
+2026-06-09 18:36:06,929 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:06,929 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("analyses")
+2026-06-09 18:36:06,929 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:06,930 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("seo_metrics")
+2026-06-09 18:36:06,930 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:06,931 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2026-06-09 18:36:06,931 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:06,931 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("accessibility_metrics")
+2026-06-09 18:36:06,931 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:06,932 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("security_metrics")
+2026-06-09 18:36:06,932 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:06,932 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("ux_metrics")
+2026-06-09 18:36:06,932 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:06,933 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("reports")
+2026-06-09 18:36:06,933 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:06,933 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("comparisons")
+2026-06-09 18:36:06,934 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:06,934 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("comparison_websites")
+2026-06-09 18:36:06,934 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:06,934 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("api_keys")
+2026-06-09 18:36:06,934 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:06,934 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2026-06-09 18:36:06,934 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2026-06-09 18:36:06,936 - sqlalchemy.engine.Engine - INFO - COMMIT
+2026-06-09 18:36:06,957 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-06-09 18:36:06,957 - sqlalchemy.engine.Engine - INFO - SELECT users.id AS users_id, users.username AS users_username, users.email AS users_email, users.password_hash AS users_password_hash, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.is_active AS users_is_active 
+FROM users 
+WHERE users.username = ?
+ LIMIT ? OFFSET ?
+2026-06-09 18:36:06,957 - sqlalchemy.engine.Engine - INFO - [generated in 0.00042s] ('admin', 1, 0)
+2026-06-09 18:36:06,957 - __main__ - INFO - База данных успешно инициализирована
+2026-06-09 18:36:06,957 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-06-09 18:36:06,976 - werkzeug - WARNING -  * Debugger is active!
+2026-06-09 18:36:07,000 - werkzeug - INFO -  * Debugger PIN: 106-732-014
+2026-06-09 18:36:09,543 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2026-06-09 18:36:09,546 - sqlalchemy.engine.Engine - INFO - SELECT count(*) AS count_1 
+FROM (SELECT websites.id AS websites_id, websites.url AS websites_url, websites.name AS websites_name, websites.description AS websites_description, websites.category AS websites_category, websites.created_by AS websites_created_by, websites.created_at AS websites_created_at, websites.updated_at AS websites_updated_at, websites.is_active AS websites_is_active 
+FROM websites) AS anon_1
+2026-06-09 18:36:09,547 - sqlalchemy.engine.Engine - INFO - [generated in 0.00064s] ()
+2026-06-09 18:36:09,550 - sqlalchemy.engine.Engine - INFO - SELECT count(*) AS count_1 
+FROM (SELECT analyses.id AS analyses_id, analyses.website_id AS analyses_website_id, analyses.user_id AS analyses_user_id, analyses.analysis_date AS analyses_analysis_date, analyses.status AS analyses_status, analyses.error_message AS analyses_error_message 
+FROM analyses) AS anon_1
+2026-06-09 18:36:09,550 - sqlalchemy.engine.Engine - INFO - [generated in 0.00044s] ()
+2026-06-09 18:36:09,552 - sqlalchemy.engine.Engine - INFO - SELECT count(*) AS count_1 
+FROM (SELECT users.id AS users_id, users.username AS users_username, users.email AS users_email, users.password_hash AS users_password_hash, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.is_active AS users_is_active 
+FROM users) AS anon_1
+2026-06-09 18:36:09,552 - sqlalchemy.engine.Engine - INFO - [generated in 0.00039s] ()
+2026-06-09 18:36:09,555 - sqlalchemy.engine.Engine - INFO - SELECT analyses.id AS analyses_id, analyses.website_id AS analyses_website_id, analyses.user_id AS analyses_user_id, analyses.analysis_date AS analyses_analysis_date, analyses.status AS analyses_status, analyses.error_message AS analyses_error_message 
+FROM analyses ORDER BY analyses.analysis_date DESC
+ LIMIT ? OFFSET ?
+2026-06-09 18:36:09,555 - sqlalchemy.engine.Engine - INFO - [generated in 0.00059s] (5, 0)
+2026-06-09 18:36:09,607 - sqlalchemy.engine.Engine - INFO - SELECT websites.id AS websites_id, websites.url AS websites_url, websites.name AS websites_name, websites.description AS websites_description, websites.category AS websites_category, websites.created_by AS websites_created_by, websites.created_at AS websites_created_at, websites.updated_at AS websites_updated_at, websites.is_active AS websites_is_active 
+FROM websites 
+WHERE websites.id = ?
+2026-06-09 18:36:09,607 - sqlalchemy.engine.Engine - INFO - [generated in 0.00051s] (7,)
+2026-06-09 18:36:09,610 - sqlalchemy.engine.Engine - INFO - SELECT websites.id AS websites_id, websites.url AS websites_url, websites.name AS websites_name, websites.description AS websites_description, websites.category AS websites_category, websites.created_by AS websites_created_by, websites.created_at AS websites_created_at, websites.updated_at AS websites_updated_at, websites.is_active AS websites_is_active 
+FROM websites 
+WHERE websites.id = ?
+2026-06-09 18:36:09,610 - sqlalchemy.engine.Engine - INFO - [cached since 0.002415s ago] (6,)
+2026-06-09 18:36:09,612 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2026-06-09 18:36:09,612 - werkzeug - INFO - 127.0.0.1 - - [09/Jun/2026 18:36:09] "GET / HTTP/1.1" 200 -
+2026-06-09 18:36:09,934 - werkzeug - INFO - 127.0.0.1 - - [09/Jun/2026 18:36:09] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
